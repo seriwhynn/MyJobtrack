@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>JobTrack – Lacak Lamaranmu</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#F5F4F0;
+  --card:#FFFFFF;
+  --card2:#FAFAF8;
+  --border:#E8E6E0;
+  --text:#1A1A1A;
+  --text2:#6B6B6B;
+  --text3:#ABABAB;
+  --primary:#4F6EF7;
+  --primary-light:#EEF1FF;
+  --green:#18B56A;
+  --green-light:#E8FBF2;
+  --yellow:#F5A623;
+  --yellow-light:#FFF6E8;
+  --red:#F04438;
+  --red-light:#FEF0EF;
+  --purple:#7B61FF;
+  --purple-light:#F0EEFF;
+  --orange:#F97316;
+  --orange-light:#FFF3EC;
+  --gray:#8C8C8C;
+  --gray-light:#F2F2F2;
+  --radius:16px;
+  --radius-sm:10px;
+  --shadow:0 2px 12px rgba(0,0,0,0.07);
+  --shadow-md:0 4px 24px rgba(0,0,0,0.10);
+}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px}
+
+/* ── TOP HEADER ── */
+.header{
+  background:var(--card);
+  border-bottom:1px solid var(--border);
+  padding:16px 20px 12px;
+  position:sticky;top:0;z-index:100;
+}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.logo{font-size:20px;font-weight:900;color:var(--text);letter-spacing:-0.5px}
+.logo span{color:var(--primary)}
+.btn-add{
+  background:var(--primary);color:#fff;border:none;
+  padding:10px 18px;border-radius:40px;font-family:inherit;
+  font-size:14px;font-weight:700;cursor:pointer;
+  display:flex;align-items:center;gap:6px;
+  box-shadow:0 4px 14px rgba(79,110,247,0.35);
+  transition:transform 0.15s,box-shadow 0.15s;
+}
+.btn-add:active{transform:scale(0.96)}
+
+/* ── SEARCH ── */
+.search-box{
+  display:flex;align-items:center;gap:10px;
+  background:var(--bg);border:1.5px solid var(--border);
+  border-radius:40px;padding:10px 16px;
+  transition:border 0.15s;
+}
+.search-box:focus-within{border-color:var(--primary)}
+.search-box input{
+  border:none;background:none;font-family:inherit;
+  font-size:14px;color:var(--text);outline:none;flex:1;
+}
+.search-box input::placeholder{color:var(--text3)}
+
+/* ── STATS STRIP ── */
+.stats-strip{
+  display:flex;gap:10px;padding:16px 20px 4px;
+  overflow-x:auto;scrollbar-width:none;
+}
+.stats-strip::-webkit-scrollbar{display:none}
+.stat-pill{
+  background:var(--card);border:1.5px solid var(--border);
+  border-radius:40px;padding:8px 16px;
+  display:flex;align-items:center;gap:8px;white-space:nowrap;
+  flex-shrink:0;box-shadow:var(--shadow);
+}
+.stat-pill .num{font-size:18px;font-weight:900}
+.stat-pill .lbl{font-size:12px;color:var(--text2);font-weight:600}
+.stat-pill.active-pill{background:var(--primary-light);border-color:rgba(79,110,247,0.25)}
+.stat-pill.active-pill .num{color:var(--primary)}
+
+/* ── FILTER TABS ── */
+.filter-scroll{
+  display:flex;gap:8px;padding:14px 20px 12px;
+  overflow-x:auto;scrollbar-width:none;
+}
+.filter-scroll::-webkit-scrollbar{display:none}
+.ftab{
+  padding:8px 16px;border-radius:40px;border:1.5px solid var(--border);
+  background:var(--card);font-family:inherit;font-size:13px;font-weight:700;
+  color:var(--text2);cursor:pointer;white-space:nowrap;flex-shrink:0;
+  transition:all 0.15s;
+}
+.ftab:active{transform:scale(0.96)}
+.ftab.on{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:0 4px 12px rgba(79,110,247,0.3)}
+
+/* ── CARDS ── */
+.cards{padding:0 16px 100px}
+.card{
+  background:var(--card);border-radius:var(--radius);
+  margin-bottom:12px;overflow:hidden;
+  box-shadow:var(--shadow);border:1.5px solid var(--border);
+  transition:transform 0.15s,box-shadow 0.15s;
+  cursor:pointer;
+}
+.card:active{transform:scale(0.99);box-shadow:var(--shadow)}
+.card-body{padding:16px}
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
+.card-logo{
+  width:42px;height:42px;border-radius:12px;
+  background:var(--primary-light);color:var(--primary);
+  font-size:15px;font-weight:900;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.card-info{flex:1;min-width:0}
+.card-company{font-size:15px;font-weight:800;color:var(--text);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-role{font-size:13px;color:var(--text2);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.tag{
+  padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;
+  background:var(--gray-light);color:var(--text2);
+}
+.card-footer{display:flex;align-items:center;justify-content:space-between}
+.card-date{font-size:12px;color:var(--text3);font-weight:600}
+.card-actions{display:flex;gap:6px}
+.icon-btn{
+  width:32px;height:32px;border-radius:8px;border:1.5px solid var(--border);
+  background:var(--card2);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:14px;transition:all 0.15s;
+}
+.icon-btn:active{transform:scale(0.92)}
+
+/* DEADLINE warning */
+.deadline-warn{
+  background:var(--red-light);color:var(--red);
+  padding:6px 12px;font-size:12px;font-weight:700;
+  display:flex;align-items:center;gap:6px;border-top:1px solid rgba(240,68,56,0.15);
+}
+
+/* ── STATUS BADGES ── */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:8px;font-size:12px;font-weight:700}
+.badge::before{content:'';width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.b-wishlist{background:var(--gray-light);color:var(--gray)}.b-wishlist::before{background:var(--gray)}
+.b-applied{background:var(--primary-light);color:var(--primary)}.b-applied::before{background:var(--primary)}
+.b-screening{background:var(--purple-light);color:var(--purple)}.b-screening::before{background:var(--purple)}
+.b-test{background:var(--orange-light);color:var(--orange)}.b-test::before{background:var(--orange)}
+.b-interview{background:var(--yellow-light);color:var(--yellow)}.b-interview::before{background:var(--yellow)}
+.b-offer{background:var(--green-light);color:var(--green)}.b-offer::before{background:var(--green)}
+.b-rejected{background:var(--red-light);color:var(--red)}.b-rejected::before{background:var(--red)}
+.b-ghosted{background:var(--gray-light);color:var(--text3)}.b-ghosted::before{background:var(--text3)}
+
+/* ── EMPTY STATE ── */
+.empty{text-align:center;padding:60px 20px}
+.empty-icon{font-size:56px;margin-bottom:16px}
+.empty h3{font-size:18px;font-weight:800;margin-bottom:6px}
+.empty p{font-size:14px;color:var(--text2)}
+
+/* ── MODAL SHEET (bottom sheet on mobile) ── */
+.overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.4);
+  z-index:200;display:flex;align-items:flex-end;
+  opacity:0;pointer-events:none;transition:opacity 0.25s;
+}
+.overlay.open{opacity:1;pointer-events:all}
+.sheet{
+  background:var(--card);width:100%;max-height:93vh;
+  border-radius:20px 20px 0 0;overflow-y:auto;
+  transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.32,0.72,0,1);
+}
+.overlay.open .sheet{transform:translateY(0)}
+.sheet-handle{width:40px;height:4px;background:var(--border);border-radius:4px;margin:12px auto 0}
+.sheet-header{
+  padding:16px 20px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--card);z-index:1;
+}
+.sheet-title{font-size:17px;font-weight:800}
+.sheet-body{padding:20px}
+.sheet-footer{
+  padding:16px 20px;border-top:1px solid var(--border);
+  display:flex;gap:10px;position:sticky;bottom:0;background:var(--card);
+}
+
+/* ── FORM ── */
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:13px;font-weight:700;color:var(--text2);margin-bottom:6px}
+.form-group input,
+.form-group select,
+.form-group textarea{
+  width:100%;padding:13px 14px;border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);font-family:inherit;font-size:15px;
+  color:var(--text);background:var(--bg);outline:none;
+  transition:border 0.15s;-webkit-appearance:none;appearance:none;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus{border-color:var(--primary);background:#fff}
+.form-group textarea{resize:none;min-height:80px;line-height:1.5}
+.form-group select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M6 8L1 3h10z' fill='%236B6B6B'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* STATUS SELECTOR */
+.status-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.status-opt{
+  padding:12px;border-radius:var(--radius-sm);border:2px solid var(--border);
+  text-align:center;cursor:pointer;transition:all 0.15s;
+  font-size:13px;font-weight:700;color:var(--text2);
+  display:flex;align-items:center;gap:8px;
+}
+.status-opt:active{transform:scale(0.97)}
+.status-opt.sel{border-color:var(--primary);background:var(--primary-light);color:var(--primary)}
+.status-opt .so-emoji{font-size:18px}
+
+/* PLATFORM SELECTOR */
+.platform-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.plat-opt{
+  padding:10px 8px;border-radius:var(--radius-sm);border:2px solid var(--border);
+  text-align:center;cursor:pointer;transition:all 0.15s;
+  font-size:12px;font-weight:700;color:var(--text2);
+}
+.plat-opt.sel{border-color:var(--primary);background:var(--primary-light);color:var(--primary)}
+
+/* BUTTON */
+.btn-full{
+  width:100%;padding:15px;border-radius:40px;border:none;
+  font-family:inherit;font-size:15px;font-weight:800;cursor:pointer;
+  transition:all 0.15s;
+}
+.btn-primary-full{background:var(--primary);color:#fff;box-shadow:0 4px 14px rgba(79,110,247,0.35)}
+.btn-primary-full:active{transform:scale(0.98)}
+.btn-ghost-full{background:var(--bg);color:var(--text2);border:1.5px solid var(--border)}
+
+/* ── DETAIL SHEET ── */
+.detail-row{display:flex;align-items:flex-start;gap:12px;padding:14px 0;border-bottom:1px solid var(--border)}
+.detail-row:last-child{border-bottom:none}
+.detail-icon{font-size:18px;flex-shrink:0;width:24px;text-align:center;margin-top:1px}
+.detail-label{font-size:12px;color:var(--text3);font-weight:700;margin-bottom:2px}
+.detail-val{font-size:14px;font-weight:600;color:var(--text)}
+
+/* PROGRESS STEPS */
+.progress-track{display:flex;align-items:center;gap:0;margin:16px 0;overflow-x:auto;scrollbar-width:none}
+.progress-track::-webkit-scrollbar{display:none}
+.step{display:flex;flex-direction:column;align-items:center;flex:1;min-width:52px}
+.step-dot{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:12px;position:relative;z-index:1}
+.step-line{flex:1;height:2px;background:var(--border);margin-top:-14px}
+.step.done .step-dot{background:var(--primary);border-color:var(--primary);color:#fff;font-size:11px}
+.step.current .step-dot{background:var(--primary-light);border-color:var(--primary);color:var(--primary);box-shadow:0 0 0 4px rgba(79,110,247,0.15)}
+.step.done .step-line{background:var(--primary)}
+.step-lbl{font-size:9px;font-weight:700;color:var(--text3);margin-top:4px;text-align:center;white-space:nowrap}
+.step.done .step-lbl,.step.current .step-lbl{color:var(--primary)}
+
+/* TOAST */
+.toast-wrap{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:999;pointer-events:none}
+.toast{
+  background:#1A1A1A;color:#fff;padding:12px 20px;border-radius:40px;
+  font-size:14px;font-weight:700;white-space:nowrap;
+  animation:toastIn 0.25s ease;display:flex;align-items:center;gap:8px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.2);
+}
+@keyframes toastIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── BOTTOM NAV ── */
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;
+  background:var(--card);border-top:1px solid var(--border);
+  display:flex;z-index:100;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.bnav-item{
+  flex:1;padding:10px 4px 10px;text-align:center;cursor:pointer;
+  border:none;background:none;font-family:inherit;
+}
+.bnav-icon{font-size:20px;display:block;margin-bottom:3px}
+.bnav-label{font-size:10px;font-weight:700;color:var(--text3)}
+.bnav-item.on .bnav-label{color:var(--primary)}
+
+/* SECTION LABEL */
+.section-lbl{font-size:12px;font-weight:800;color:var(--text3);letter-spacing:0.5px;text-transform:uppercase;padding:4px 20px 8px;margin-top:4px}
+
+/* KANBAN SCROLL */
+.kanban-wrap{padding:12px 16px 100px;overflow-x:auto;display:flex;gap:12px;scrollbar-width:none}
+.kanban-wrap::-webkit-scrollbar{display:none}
+.kcol{min-width:260px;max-width:260px}
+.kcol-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--card);border:1.5px solid var(--border);border-radius:12px 12px 0 0;border-bottom:none}
+.kcol-title{font-size:13px;font-weight:800}
+.kcol-count{background:var(--bg);border:1px solid var(--border);border-radius:20px;font-size:11px;font-weight:700;color:var(--text2);padding:2px 8px}
+.kcol-body{background:var(--bg);border:1.5px solid var(--border);border-radius:0 0 12px 12px;min-height:160px;padding:8px;display:flex;flex-direction:column;gap:8px}
+.kcard{background:var(--card);border-radius:10px;padding:12px;border:1px solid var(--border);cursor:pointer}
+.kcard-co{font-size:13px;font-weight:800;margin-bottom:2px}
+.kcard-role{font-size:12px;color:var(--text2);font-weight:600;margin-bottom:8px}
+
+/* STATS VIEW */
+.stats-view{padding:0 16px 100px}
+.scard{background:var(--card);border-radius:var(--radius);padding:18px;margin-bottom:12px;border:1.5px solid var(--border);box-shadow:var(--shadow)}
+.scard h3{font-size:14px;font-weight:800;margin-bottom:14px;color:var(--text)}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.bar-label{font-size:12px;font-weight:700;min-width:88px;color:var(--text2)}
+.bar-track{flex:1;background:var(--bg);border-radius:4px;height:8px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;transition:width 0.6s}
+.bar-num{font-size:12px;font-weight:800;min-width:20px;text-align:right}
+.summary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.sbox{background:var(--bg);border-radius:12px;padding:16px;text-align:center}
+.sbox-num{font-size:28px;font-weight:900;margin-bottom:4px}
+.sbox-lbl{font-size:12px;color:var(--text2);font-weight:700}
+
+@media(min-width:600px){
+  .cards{max-width:480px;margin:0 auto}
+  .stats-view,.kanban-wrap{max-width:100%}
+  .sheet{max-width:480px;margin:0 auto;border-radius:20px;align-self:center}
+  .overlay{align-items:center}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div class="logo">Job<span>Track</span> 🎯</div>
+    <button class="btn-add" onclick="openAdd()">+ Tambah</button>
+  </div>
+  <div class="search-box">
+    <span>🔍</span>
+    <input type="text" placeholder="Cari perusahaan atau posisi..." id="searchInput" oninput="render()">
+  </div>
+</div>
+
+<!-- STATS STRIP -->
+<div class="stats-strip" id="statsStrip"></div>
+
+<!-- FILTER TABS -->
+<div class="filter-scroll" id="filterScroll"></div>
+
+<!-- MAIN AREA (swapped by nav) -->
+<div id="viewList">
+  <div class="cards" id="cardList"></div>
+</div>
+<div id="viewKanban" style="display:none">
+  <div class="kanban-wrap" id="kanbanWrap"></div>
+</div>
+<div id="viewStats" style="display:none">
+  <div class="stats-view" id="statsView"></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="bnav-item on" id="nav0" onclick="switchView(0)">
+    <span class="bnav-icon">📋</span>
+    <span class="bnav-label">Lamaran</span>
+  </button>
+  <button class="bnav-item" id="nav1" onclick="switchView(1)">
+    <span class="bnav-icon">🗂️</span>
+    <span class="bnav-label">Kanban</span>
+  </button>
+  <button class="bnav-item" id="nav2" onclick="switchView(2)">
+    <span class="bnav-icon">📊</span>
+    <span class="bnav-label">Statistik</span>
+  </button>
+</div>
+
+<!-- ADD/EDIT SHEET -->
+<div class="overlay" id="addOverlay" onclick="closeAddOutside(event)">
+  <div class="sheet" id="addSheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <div class="sheet-title" id="addTitle">Tambah Lamaran</div>
+      <button style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--text2)" onclick="closeAdd()">✕</button>
+    </div>
+    <div class="sheet-body">
+
+      <!-- STEP INDICATOR -->
+      <div style="display:flex;gap:6px;margin-bottom:20px" id="stepDots">
+        <div style="height:4px;flex:1;border-radius:4px;background:var(--primary)" id="dot0"></div>
+        <div style="height:4px;flex:1;border-radius:4px;background:var(--border)" id="dot1"></div>
+        <div style="height:4px;flex:1;border-radius:4px;background:var(--border)" id="dot2"></div>
+      </div>
+
+      <!-- STEP 1: Basic Info -->
+      <div id="step1">
+        <div class="form-group">
+          <label>🏢 Nama Perusahaan</label>
+          <input type="text" id="f-company" placeholder="Gojek, Tokopedia, BCA..." autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label>💼 Posisi yang Dilamar</label>
+          <input type="text" id="f-role" placeholder="Frontend Dev, HRD, Analyst...">
+        </div>
+        <div class="form-group">
+          <label>📍 Lokasi</label>
+          <input type="text" id="f-location" placeholder="Jakarta, Remote, Medan...">
+        </div>
+        <div class="form-group">
+          <label>💰 Estimasi Gaji (Rp)</label>
+          <input type="text" id="f-salary" placeholder="8.000.000 – 12.000.000">
+        </div>
+        <div class="form-group">
+          <label>🔗 Link Lamaran (opsional)</label>
+          <input type="url" id="f-url" placeholder="https://...">
+        </div>
+      </div>
+
+      <!-- STEP 2: Platform & Status -->
+      <div id="step2" style="display:none">
+        <div class="form-group">
+          <label>📲 Dari mana kamu daftar?</label>
+          <div class="platform-grid" id="platformGrid"></div>
+        </div>
+        <div class="form-group" style="margin-top:20px">
+          <label>📌 Status sekarang?</label>
+          <div class="status-grid" id="statusGrid"></div>
+        </div>
+      </div>
+
+      <!-- STEP 3: Extra -->
+      <div id="step3" style="display:none">
+        <div class="form-row">
+          <div class="form-group">
+            <label>📅 Tanggal Daftar</label>
+            <input type="date" id="f-date">
+          </div>
+          <div class="form-group">
+            <label>⏰ Deadline</label>
+            <input type="date" id="f-deadline">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>🧑‍💼 Nama HR / Recruiter (opsional)</label>
+          <input type="text" id="f-hr" placeholder="Nama HR kalau ada">
+        </div>
+        <div class="form-group">
+          <label>📝 Catatan</label>
+          <textarea id="f-notes" placeholder="Contoh: Interview Senin 20 Jan via Zoom. Bawa portfolio..."></textarea>
+        </div>
+      </div>
+
+    </div>
+    <div class="sheet-footer">
+      <button class="btn-full btn-ghost-full" id="btnBack" onclick="prevStep()" style="display:none">← Kembali</button>
+      <button class="btn-full btn-primary-full" id="btnNext" onclick="nextStep()">Lanjut →</button>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL SHEET -->
+<div class="overlay" id="detailOverlay" onclick="closeDetailOutside(event)">
+  <div class="sheet" id="detailSheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <div>
+        <div class="sheet-title" id="d-company">Detail</div>
+        <div style="font-size:13px;color:var(--text2);font-weight:600;margin-top:2px" id="d-role"></div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button style="background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:7px 12px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer" onclick="editCurrent()">✏️ Edit</button>
+        <button style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--text2)" onclick="closeDetail()">✕</button>
+      </div>
+    </div>
+    <div class="sheet-body" id="detailBody"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+// ─────────────── STATE ───────────────
+let jobs = JSON.parse(localStorage.getItem('jt3') || '[]');
+let filter = 'all';
+let curView = 0;
+let editId = null;
+let detailId = null;
+let formStep = 1;
+let fPlatform = '';
+let fStatus = 'applied';
+
+const STATUSES = [
+  {k:'wishlist', e:'💾', l:'Wishlist'},
+  {k:'applied',  e:'📤', l:'Sudah Daftar'},
+  {k:'screening',e:'🔍', l:'Screening'},
+  {k:'test',     e:'📝', l:'Test/Psikotes'},
+  {k:'interview',e:'🎙️', l:'Interview'},
+  {k:'offer',    e:'🎉', l:'Offer!'},
+  {k:'rejected', e:'❌', l:'Ditolak'},
+  {k:'ghosted',  e:'👻', l:'Ghosted'},
+];
+const STATUS_MAP = {};
+STATUSES.forEach(s => STATUS_MAP[s.k] = s);
+
+const PLATFORMS = ['LinkedIn','Glints','JobStreet','Talentics','Kalibrr','Indeed','Website','Referral','Email','WA/DM','Lainnya'];
+
+const PROGRESS_STEPS = ['applied','screening','test','interview','offer'];
+
+function save(){
+  localStorage.setItem('jt3', JSON.stringify(jobs));
+}
+
+// ─────────────── RENDER ───────────────
+function render(){
+  renderStats();
+  renderFilters();
+  if(curView===0) renderCards();
+  else if(curView===1) renderKanban();
+  else renderStatsView();
+}
+
+function getFiltered(){
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  let d = [...jobs];
+  if(q) d = d.filter(j =>
+    j.company.toLowerCase().includes(q) ||
+    j.role.toLowerCase().includes(q) ||
+    (j.platform||'').toLowerCase().includes(q)
+  );
+  if(filter !== 'all') d = d.filter(j => j.status === filter);
+  return d;
+}
+
+function renderStats(){
+  const counts = {};
+  STATUSES.forEach(s => counts[s.k] = 0);
+  jobs.forEach(j => counts[j.status] = (counts[j.status]||0)+1);
+  const active = (counts.screening||0)+(counts.test||0)+(counts.interview||0);
+  document.getElementById('statsStrip').innerHTML = [
+    {n: jobs.length, l:'Total', cl:''},
+    {n: active, l:'Aktif Proses', cl:'active-pill'},
+    {n: counts.offer||0, l:'Offer 🎉', cl:''},
+    {n: counts.interview||0, l:'Interview', cl:''},
+    {n: counts.rejected||0, l:'Ditolak', cl:''},
+    {n: counts.ghosted||0, l:'Ghosted', cl:''},
+  ].map(s => `<div class="stat-pill ${s.cl}"><span class="num">${s.n}</span><span class="lbl">${s.l}</span></div>`).join('');
+}
+
+function renderFilters(){
+  const counts = {};
+  STATUSES.forEach(s => counts[s.k] = 0);
+  jobs.forEach(j => counts[j.status] = (counts[j.status]||0)+1);
+  const tabs = [{k:'all',l:'Semua', n:jobs.length}, ...STATUSES.map(s=>({k:s.k,l:s.e+' '+s.l,n:counts[s.k]}))];
+  document.getElementById('filterScroll').innerHTML = tabs
+    .map(t => `<button class="ftab ${filter===t.k?'on':''}" onclick="setFilter('${t.k}')">${t.l} ${t.n>0?'<span style="opacity:0.6;font-size:11px">('+t.n+')</span>':''}</button>`)
+    .join('');
+}
+
+function renderCards(){
+  const data = getFiltered();
+  const today = new Date(); today.setHours(0,0,0,0);
+  if(data.length===0){
+    document.getElementById('cardList').innerHTML = `<div class="empty"><div class="empty-icon">📭</div><h3>Belum ada lamaran</h3><p>Tap "+ Tambah" untuk mulai melacak lamaranmu!</p></div>`;
+    return;
+  }
+  document.getElementById('cardList').innerHTML = data.map(j => {
+    const ini = j.company.split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase()||'?';
+    const st = STATUS_MAP[j.status] || STATUSES[0];
+    const dl = j.deadline ? new Date(j.deadline) : null;
+    const diff = dl ? Math.ceil((dl-today)/86400000) : null;
+    let dlHtml = '';
+    if(dl){
+      if(diff<0) dlHtml=`<div class="deadline-warn">⚠️ Deadline sudah lewat!</div>`;
+      else if(diff<=2) dlHtml=`<div class="deadline-warn">⚠️ Deadline ${diff===0?'hari ini':diff+' hari lagi'}!</div>`;
+    }
+    return `<div class="card" onclick="openDetail('${j.id}')">
+      ${dlHtml}
+      <div class="card-body">
+        <div class="card-top">
+          <div style="display:flex;gap:10px;align-items:flex-start;flex:1;min-width:0">
+            <div class="card-logo">${ini}</div>
+            <div class="card-info">
+              <div class="card-company">${esc(j.company)}</div>
+              <div class="card-role">${esc(j.role)}</div>
+            </div>
+          </div>
+          <span class="badge b-${j.status}">${st.l}</span>
+        </div>
+        <div class="card-meta">
+          <span class="tag">📲 ${j.platform||'-'}</span>
+          ${j.location?`<span class="tag">📍 ${esc(j.location)}</span>`:''}
+          ${j.salary?`<span class="tag">💰 Rp ${esc(j.salary)}</span>`:''}
+        </div>
+        <div class="card-footer">
+          <span class="card-date">📅 ${j.applyDate||'-'}</span>
+          <div class="card-actions" onclick="event.stopPropagation()">
+            ${j.url?`<a href="${j.url}" target="_blank" onclick="event.stopPropagation()"><div class="icon-btn">🔗</div></a>`:''}
+            <div class="icon-btn" onclick="openAddEdit('${j.id}');event.stopPropagation()">✏️</div>
+            <div class="icon-btn" onclick="del('${j.id}');event.stopPropagation()">🗑️</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderKanban(){
+  const ks = STATUSES.slice(0,6);
+  document.getElementById('kanbanWrap').innerHTML = ks.map(s => {
+    const cards = jobs.filter(j=>j.status===s.k);
+    return `<div class="kcol">
+      <div class="kcol-head">
+        <span class="kcol-title">${s.e} ${s.l}</span>
+        <span class="kcol-count">${cards.length}</span>
+      </div>
+      <div class="kcol-body">
+        ${cards.length===0?'<div style="font-size:12px;color:var(--text3);text-align:center;padding:16px">Kosong</div>':
+          cards.map(j=>`<div class="kcard" onclick="openDetail('${j.id}')">
+            <div class="kcard-co">${esc(j.company)}</div>
+            <div class="kcard-role">${esc(j.role)}</div>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span class="tag" style="font-size:10px;padding:3px 8px">${j.platform||'-'}</span>
+              <span style="font-size:11px;color:var(--text3);font-weight:600">${j.applyDate||''}</span>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderStatsView(){
+  const counts = {};
+  const platforms = {};
+  STATUSES.forEach(s=>counts[s.k]=0);
+  jobs.forEach(j=>{
+    counts[j.status]=(counts[j.status]||0)+1;
+    if(j.platform) platforms[j.platform]=(platforms[j.platform]||0)+1;
+  });
+  const total = jobs.length||1;
+  const barColors={wishlist:'var(--gray)',applied:'var(--primary)',screening:'var(--purple)',test:'var(--orange)',interview:'var(--yellow)',offer:'var(--green)',rejected:'var(--red)',ghosted:'var(--text3)'};
+  const max = Math.max(...Object.values(counts),1);
+
+  const offerRate = Math.round((counts.offer||0)/total*100);
+  const ghostRate = Math.round((counts.ghosted||0)/total*100);
+  const active = (counts.screening||0)+(counts.test||0)+(counts.interview||0);
+  const responseCount = jobs.filter(j=>j.status!=='wishlist').length;
+  const responseRate = responseCount ? Math.round(jobs.filter(j=>!['applied','wishlist','ghosted'].includes(j.status)).length/responseCount*100) : 0;
+
+  const sortedPlatforms = Object.entries(platforms).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const pmax = sortedPlatforms[0]?.[1]||1;
+
+  document.getElementById('statsView').innerHTML = `
+    <div class="scard">
+      <h3>🎯 Ringkasan</h3>
+      <div class="summary-grid">
+        <div class="sbox"><div class="sbox-num" style="color:var(--primary)">${jobs.length}</div><div class="sbox-lbl">Total Lamaran</div></div>
+        <div class="sbox"><div class="sbox-num" style="color:var(--yellow)">${active}</div><div class="sbox-lbl">Sedang Proses</div></div>
+        <div class="sbox"><div class="sbox-num" style="color:var(--green)">${offerRate}%</div><div class="sbox-lbl">Offer Rate</div></div>
+        <div class="sbox"><div class="sbox-num" style="color:var(--primary)">${responseRate}%</div><div class="sbox-lbl">Response Rate</div></div>
+      </div>
+    </div>
+    <div class="scard">
+      <h3>📊 Status Lamaran</h3>
+      <div class="bar-chart">
+        ${STATUSES.map(s=>`<div class="bar-row">
+          <div class="bar-label">${s.e} ${s.l}</div>
+          <div class="bar-track"><div class="bar-fill" style="width:${counts[s.k]/max*100}%;background:${barColors[s.k]}"></div></div>
+          <div class="bar-num" style="color:${barColors[s.k]}">${counts[s.k]}</div>
+        </div>`).join('')}
+      </div>
+    </div>
+    ${sortedPlatforms.length?`<div class="scard">
+      <h3>📲 Platform Terbanyak</h3>
+      ${sortedPlatforms.map(([p,c])=>`<div class="bar-row">
+        <div class="bar-label">${p}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${c/pmax*100}%;background:var(--primary)"></div></div>
+        <div class="bar-num" style="color:var(--primary)">${c}</div>
+      </div>`).join('')}
+    </div>`:''}
+    <div class="scard" style="display:flex;gap:12px;align-items:center;justify-content:space-between">
+      <div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:4px">Backup Data</div>
+        <div style="font-size:12px;color:var(--text2)">Export/import semua data lamaran kamu</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn-full btn-ghost-full" style="width:auto;padding:10px 14px;font-size:13px;border-radius:10px" onclick="exportData()">⬇️ Export</button>
+        <button class="btn-full btn-ghost-full" style="width:auto;padding:10px 14px;font-size:13px;border-radius:10px" onclick="importData()">⬆️ Import</button>
+        <input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImport(event)">
+      </div>
+    </div>
+  `;
+}
+
+// ─────────────── FILTER ───────────────
+function setFilter(f){
+  filter=f;
+  render();
+  // scroll filter into view
+  document.querySelector('.ftab.on')?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+}
+
+// ─────────────── VIEW SWITCH ───────────────
+function switchView(v){
+  curView=v;
+  [0,1,2].forEach(i=>{
+    document.getElementById('nav'+i).classList.toggle('on',i===v);
+  });
+  document.getElementById('viewList').style.display = v===0?'':'none';
+  document.getElementById('viewKanban').style.display = v===1?'':'none';
+  document.getElementById('viewStats').style.display = v===2?'':'none';
+  render();
+}
+
+// ─────────────── ADD / EDIT ───────────────
+function openAdd(){
+  editId=null;
+  formStep=1;
+  fPlatform='';
+  fStatus='applied';
+  document.getElementById('addTitle').textContent='Tambah Lamaran';
+  clearForm();
+  document.getElementById('f-date').value=new Date().toISOString().split('T')[0];
+  buildPlatformGrid();
+  buildStatusGrid();
+  showStep(1);
+  document.getElementById('addOverlay').classList.add('open');
+}
+
+function openAddEdit(id){
+  editId=id;
+  const j=jobs.find(x=>x.id===id);
+  if(!j) return;
+  formStep=1;
+  fPlatform=j.platform||'';
+  fStatus=j.status||'applied';
+  document.getElementById('addTitle').textContent='Edit Lamaran';
+  document.getElementById('f-company').value=j.company||'';
+  document.getElementById('f-role').value=j.role||'';
+  document.getElementById('f-location').value=j.location||'';
+  document.getElementById('f-salary').value=j.salary||'';
+  document.getElementById('f-url').value=j.url||'';
+  document.getElementById('f-date').value=j.applyDate||'';
+  document.getElementById('f-deadline').value=j.deadline||'';
+  document.getElementById('f-hr').value=j.hr||'';
+  document.getElementById('f-notes').value=j.notes||'';
+  buildPlatformGrid();
+  buildStatusGrid();
+  showStep(1);
+  document.getElementById('addOverlay').classList.add('open');
+}
+
+function clearForm(){
+  ['f-company','f-role','f-location','f-salary','f-url','f-date','f-deadline','f-hr','f-notes'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.value='';
+  });
+}
+
+function buildPlatformGrid(){
+  document.getElementById('platformGrid').innerHTML = PLATFORMS.map(p=>
+    `<div class="plat-opt ${fPlatform===p?'sel':''}" onclick="selPlatform('${p}')">${p}</div>`
+  ).join('');
+}
+
+function buildStatusGrid(){
+  document.getElementById('statusGrid').innerHTML = STATUSES.map(s=>
+    `<div class="status-opt ${fStatus===s.k?'sel':''}" onclick="selStatus('${s.k}')">
+      <span class="so-emoji">${s.e}</span>${s.l}
+    </div>`
+  ).join('');
+}
+
+function selPlatform(p){fPlatform=p;buildPlatformGrid()}
+function selStatus(s){fStatus=s;buildStatusGrid()}
+
+function showStep(n){
+  formStep=n;
+  [1,2,3].forEach(i=>{
+    document.getElementById('step'+i).style.display=i===n?'':'none';
+    document.getElementById('dot'+(i-1)).style.background=i<=n?'var(--primary)':'var(--border)';
+  });
+  document.getElementById('btnBack').style.display=n>1?'':'none';
+  document.getElementById('btnNext').textContent=n===3?'💾 Simpan':'Lanjut →';
+}
+
+function nextStep(){
+  if(formStep===1){
+    if(!document.getElementById('f-company').value.trim()){toast('Isi nama perusahaan dulu ya!');return;}
+    if(!document.getElementById('f-role').value.trim()){toast('Isi posisi yang dilamar!');return;}
+    showStep(2);
+  } else if(formStep===2){
+    if(!fPlatform){toast('Pilih platform dulu!');return;}
+    showStep(3);
+  } else {
+    saveJob();
+  }
+}
+
+function prevStep(){
+  if(formStep>1) showStep(formStep-1);
+}
+
+function saveJob(){
+  const j={
+    id: editId||Date.now().toString(),
+    company: document.getElementById('f-company').value.trim(),
+    role: document.getElementById('f-role').value.trim(),
+    location: document.getElementById('f-location').value.trim(),
+    salary: document.getElementById('f-salary').value.trim(),
+    url: document.getElementById('f-url').value.trim(),
+    platform: fPlatform,
+    status: fStatus,
+    applyDate: document.getElementById('f-date').value,
+    deadline: document.getElementById('f-deadline').value,
+    hr: document.getElementById('f-hr').value.trim(),
+    notes: document.getElementById('f-notes').value.trim(),
+    updatedAt: new Date().toISOString(),
+  };
+  // history
+  const prev = editId ? jobs.find(x=>x.id===editId) : null;
+  j.history = prev?.history || [];
+  if(!j.history.length || j.history[j.history.length-1].status !== j.status){
+    j.history.push({status:j.status, date:j.applyDate||new Date().toISOString().split('T')[0]});
+  }
+
+  if(editId){
+    jobs[jobs.findIndex(x=>x.id===editId)]=j;
+    toast('✅ Berhasil diupdate!');
+  } else {
+    jobs.unshift(j);
+    toast('🎉 Lamaran ditambahkan!');
+  }
+  save();
+  render();
+  closeAdd();
+}
+
+function closeAdd(){document.getElementById('addOverlay').classList.remove('open')}
+function closeAddOutside(e){if(e.target===document.getElementById('addOverlay'))closeAdd()}
+
+// ─────────────── DETAIL ───────────────
+function openDetail(id){
+  detailId=id;
+  const j=jobs.find(x=>x.id===id);
+  if(!j) return;
+  const st=STATUS_MAP[j.status]||STATUSES[0];
+  document.getElementById('d-company').textContent=j.company;
+  document.getElementById('d-role').textContent=j.role;
+
+  // progress track
+  const curIdx=PROGRESS_STEPS.indexOf(j.status);
+  let progressHtml='';
+  if(curIdx>=0){
+    const stepLabels={applied:'Daftar',screening:'Screening',test:'Test',interview:'Interview',offer:'Offer!'};
+    progressHtml=`<div style="margin-bottom:16px">
+      <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:10px">PROGRESS</div>
+      <div class="progress-track">
+        ${PROGRESS_STEPS.map((s,i)=>{
+          const isDone=i<curIdx;
+          const isCur=i===curIdx;
+          return `<div class="step ${isDone?'done':''} ${isCur?'current':''}">
+            <div style="display:flex;align-items:center;width:100%">
+              ${i>0?`<div class="step-line ${isDone?'done':''}"></div>`:''}
+              <div class="step-dot">${isDone?'✓':isCur?'●':''}</div>
+              ${i<PROGRESS_STEPS.length-1?`<div class="step-line ${isDone?'done':''}"></div>`:''}
+            </div>
+            <div class="step-lbl">${stepLabels[s]}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }
+
+  const today=new Date(); today.setHours(0,0,0,0);
+  const dl=j.deadline?new Date(j.deadline):null;
+  const diff=dl?Math.ceil((dl-today)/86400000):null;
+  let dlText='-';
+  if(dl){
+    if(diff<0) dlText=`<span style="color:var(--red)">Sudah lewat (${j.deadline})</span>`;
+    else if(diff===0) dlText=`<span style="color:var(--red)">⚠️ Hari ini!</span>`;
+    else if(diff<=2) dlText=`<span style="color:var(--red)">⚠️ ${j.deadline} (${diff} hari lagi!)</span>`;
+    else dlText=j.deadline+' ('+diff+' hari lagi)';
+  }
+
+  document.getElementById('detailBody').innerHTML = `
+    ${progressHtml}
+    <div style="margin-bottom:12px"><span class="badge b-${j.status}">${st.e} ${st.l}</span></div>
+    ${[
+      {i:'📲',l:'Platform',v:j.platform||'-'},
+      {i:'📍',l:'Lokasi',v:j.location||'-'},
+      {i:'💰',l:'Estimasi Gaji',v:j.salary?'Rp '+j.salary:'-'},
+      {i:'📅',l:'Tanggal Daftar',v:j.applyDate||'-'},
+      {i:'⏰',l:'Deadline',v:dlText},
+      {i:'🧑‍💼',l:'HR/Recruiter',v:j.hr||'-'},
+    ].map(r=>`<div class="detail-row">
+      <div class="detail-icon">${r.i}</div>
+      <div><div class="detail-label">${r.l}</div><div class="detail-val">${r.v}</div></div>
+    </div>`).join('')}
+    ${j.url?`<div class="detail-row"><div class="detail-icon">🔗</div><div><div class="detail-label">Link</div><a href="${j.url}" target="_blank" style="font-size:14px;font-weight:600;color:var(--primary);word-break:break-all">${j.url}</a></div></div>`:''}
+    ${j.notes?`<div style="margin-top:16px;background:var(--primary-light);border-radius:12px;padding:14px">
+      <div style="font-size:12px;font-weight:800;color:var(--primary);margin-bottom:6px">📌 CATATAN</div>
+      <div style="font-size:14px;color:var(--text);line-height:1.6">${esc(j.notes)}</div>
+    </div>`:''}
+    <div style="margin-top:16px">
+      <button class="btn-full btn-ghost-full" style="color:var(--red);border-color:rgba(240,68,56,0.3)" onclick="del('${j.id}');closeDetail()">🗑️ Hapus Lamaran Ini</button>
+    </div>
+    <div style="height:8px"></div>
+  `;
+  document.getElementById('detailOverlay').classList.add('open');
+}
+
+function closeDetail(){document.getElementById('detailOverlay').classList.remove('open')}
+function closeDetailOutside(e){if(e.target===document.getElementById('detailOverlay'))closeDetail()}
+function editCurrent(){closeDetail();openAddEdit(detailId)}
+
+// ─────────────── DELETE ───────────────
+function del(id){
+  if(!confirm('Hapus lamaran ini?')) return;
+  jobs=jobs.filter(x=>x.id!==id);
+  save();render();
+  toast('Lamaran dihapus.');
+}
+
+// ─────────────── EXPORT/IMPORT ───────────────
+function exportData(){
+  const b=new Blob([JSON.stringify(jobs,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(b);
+  a.download='jobtrack_'+new Date().toISOString().split('T')[0]+'.json';
+  a.click();
+  toast('⬇️ Data berhasil diexport!');
+}
+function importData(){document.getElementById('importFile').click()}
+function handleImport(e){
+  const file=e.target.files[0];
+  if(!file) return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    try{
+      const data=JSON.parse(ev.target.result);
+      if(!Array.isArray(data)) throw 0;
+      const existing=new Set(jobs.map(j=>j.id));
+      const newItems=data.filter(j=>!existing.has(j.id));
+      jobs=[...newItems,...jobs];
+      save();render();
+      toast(`✅ Import ${newItems.length} lamaran berhasil!`);
+    } catch{toast('File tidak valid!')}
+  };
+  r.readAsText(file);
+  e.target.value='';
+}
+
+// ─────────────── UTIL ───────────────
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+function toast(msg){
+  const w=document.getElementById('toastWrap');
+  const el=document.createElement('div');
+  el.className='toast';el.textContent=msg;
+  w.appendChild(el);
+  setTimeout(()=>el.remove(),2800);
+}
+
+// ─────────────── DEADLINE CHECK ───────────────
+function checkDeadlines(){
+  const today=new Date();today.setHours(0,0,0,0);
+  const soon=jobs.filter(j=>{
+    if(!j.deadline||['rejected','ghosted','offer'].includes(j.status)) return false;
+    const d=new Date(j.deadline);
+    const diff=Math.ceil((d-today)/86400000);
+    return diff>=0&&diff<=2;
+  });
+  if(soon.length) setTimeout(()=>toast(`⚠️ ${soon.length} lamaran mau deadline!`),800);
+}
+
+// ─────────────── INIT ───────────────
+render();
+checkDeadlines();
+</script>
+</body>
+</html>
